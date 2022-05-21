@@ -7,8 +7,7 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["orderByAggregateGroup", "selectRelationCount", "referentialActions"]
+  provider = "prisma-client-js"
 }
 
 model Article {
@@ -54,5 +53,7 @@ model User {
   favorites  Article[] @relation("UserFavorites", references: [id])
   followedBy User[]    @relation("UserFollows", references: [id])
   following  User[]    @relation("UserFollows", references: [id])
+  blocking   User[]    @relation("UserBlocks", references: [id])
+  blockedBy  User[]    @relation("UserBlocks", references: [id])
   comments   Comment[]
 }

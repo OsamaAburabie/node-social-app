@@ -3,7 +3,11 @@ import auth from '../utils/auth';
 import getTags from '../services/tag.service';
 
 const router = Router();
-
+declare module 'express-serve-static-core' {
+  export interface Request {
+    user: any;
+  }
+}
 /**
  * Get top 10 popular tags
  * @auth optional
