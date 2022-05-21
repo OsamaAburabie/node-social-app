@@ -1,6 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import auth from '../utils/auth';
-import { followUser, getProfile, unfollowUser } from '../services/profile.service';
+import {
+  blockUser,
+  followUser,
+  getProfile,
+  unblockUser,
+  unfollowUser,
+} from '../services/profile.service';
 
 const router = Router();
 
@@ -57,6 +63,32 @@ router.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const profile = await unfollowUser(req.params.username, req.user?.username as string);
+      res.json({ profile });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.post(
+  '/profiles/:username/block',
+  auth.required,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const profile = await blockUser(req.params.username, req.user?.username as string);
+      res.json({ profile });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.delete(
+  '/profiles/:username/block',
+  auth.required,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const profile = await unblockUser(req.params.username, req.user?.username as string);
       res.json({ profile });
     } catch (error) {
       next(error);

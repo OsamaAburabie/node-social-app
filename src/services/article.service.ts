@@ -85,7 +85,7 @@ export const getArticles = async (query: any, username?: string) => {
           username: true,
           bio: true,
           image: true,
-          followedBy: true,
+          followers: true,
         },
       },
       favoritedBy: true,
@@ -115,7 +115,7 @@ export const getFeed = async (offset: number, limit: number, username: string) =
   const articlesCount = await prisma.article.count({
     where: {
       author: {
-        followedBy: { some: { id: user?.id } },
+        followers: { some: { id: user?.id } },
       },
     },
   });
@@ -123,7 +123,7 @@ export const getFeed = async (offset: number, limit: number, username: string) =
   const articles = await prisma.article.findMany({
     where: {
       author: {
-        followedBy: { some: { id: user?.id } },
+        followers: { some: { id: user?.id } },
       },
     },
     orderBy: {
@@ -142,7 +142,7 @@ export const getFeed = async (offset: number, limit: number, username: string) =
           username: true,
           bio: true,
           image: true,
-          followedBy: true,
+          followers: true,
         },
       },
       favoritedBy: true,
@@ -262,7 +262,7 @@ export const getArticle = async (slug: string, username?: string) => {
           username: true,
           bio: true,
           image: true,
-          followedBy: true,
+          followers: true,
         },
       },
       favoritedBy: true,
@@ -286,7 +286,7 @@ export const getArticle = async (slug: string, username?: string) => {
     favorited: article?.favoritedBy.some(item => item.username === username),
     author: {
       ...article?.author,
-      following: article?.author.followedBy.some(follow => follow.username === username),
+      following: article?.author.followers.some(follow => follow.username === username),
     },
   };
 };
@@ -424,7 +424,7 @@ export const getCommentsByArticle = async (slug: string, username?: string) => {
               username: true,
               bio: true,
               image: true,
-              followedBy: true,
+              followers: true,
             },
           },
         },
@@ -438,7 +438,7 @@ export const getCommentsByArticle = async (slug: string, username?: string) => {
       username: comment.author.username,
       bio: comment.author.bio,
       image: comment.author.image,
-      following: comment.author.followedBy.some(follow => follow.username === username),
+      following: comment.author.followers.some(follow => follow.username === username),
     },
   }));
 
@@ -481,7 +481,7 @@ export const addComment = async (body: string, slug: string, username: string) =
           username: true,
           bio: true,
           image: true,
-          followedBy: true,
+          followers: true,
         },
       },
     },
@@ -496,7 +496,7 @@ export const addComment = async (body: string, slug: string, username: string) =
       username: comment.author.username,
       bio: comment.author.bio,
       image: comment.author.image,
-      following: comment.author.followedBy.some(follow => follow.id === user?.id),
+      following: comment.author.followers.some(follow => follow.id === user?.id),
     },
   };
 };
@@ -547,7 +547,7 @@ export const favoriteArticle = async (slugPayload: string, usernameAuth: string)
           username: true,
           bio: true,
           image: true,
-          followedBy: true,
+          followers: true,
         },
       },
       favoritedBy: true,
@@ -595,7 +595,7 @@ export const unfavoriteArticle = async (slugPayload: string, usernameAuth: strin
           username: true,
           bio: true,
           image: true,
-          followedBy: true,
+          followers: true,
         },
       },
       favoritedBy: true,

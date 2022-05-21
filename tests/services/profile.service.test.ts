@@ -16,7 +16,7 @@ describe('ProfileService', () => {
         bio: null,
         image: null,
         token: '',
-        followedBy: [],
+        followers: [],
       };
 
       // When
@@ -53,7 +53,7 @@ describe('ProfileService', () => {
         bio: null,
         image: null,
         token: '',
-        followedBy: [],
+        followers: [],
       };
 
       const mockedResponse = {
@@ -64,7 +64,7 @@ describe('ProfileService', () => {
         bio: null,
         image: null,
         token: '',
-        followedBy: [],
+        followers: [],
       };
 
       // When
@@ -102,7 +102,7 @@ describe('ProfileService', () => {
         bio: null,
         image: null,
         token: '',
-        followedBy: [],
+        followers: [],
       };
 
       const mockedResponse = {
@@ -113,7 +113,7 @@ describe('ProfileService', () => {
         bio: null,
         image: null,
         token: '',
-        followedBy: [],
+        followers: [],
       };
 
       // When

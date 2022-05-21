@@ -8,7 +8,7 @@ describe('ProfileUtils', () => {
         username: 'RealWorld',
         bio: 'My happy life',
         image: null,
-        followedBy: [],
+        followers: [],
       };
       const username = 'RealWorld';
 
@@ -30,7 +30,7 @@ describe('ProfileUtils', () => {
         username: 'RealWorld',
         bio: 'My happy life',
         image: null,
-        followedBy: [
+        followers: [
           {
             username: 'RealWorld',
           },
@@ -56,7 +56,7 @@ describe('ProfileUtils', () => {
         username: 'RealWorld',
         bio: 'My happy life',
         image: null,
-        followedBy: [
+        followers: [
           {
             username: 'NotRealWorld',
           },

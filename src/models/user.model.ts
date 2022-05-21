@@ -10,7 +10,7 @@ export interface User {
   image: any | null;
   articles: Article[];
   favorites: Article[];
-  followedBy: User[];
+  followers: User[];
   following: User[];
   comments: Comment[];
 }

@@ -51,7 +51,7 @@ describe('ArticleService', () => {
           username: 'RealWorld',
           bio: null,
           image: null,
-          followedBy: [],
+          followers: [],
         },
       };
 
@@ -106,7 +106,7 @@ describe('ArticleService', () => {
           username: 'RealWorld',
           bio: null,
           image: null,
-          followedBy: [],
+          followers: [],
         },
       };
 

@@ -6,7 +6,7 @@ const profileMapper = (user: any, username: string | undefined): Profile => ({
   bio: user.bio,
   image: user.image,
   following: username
-    ? user?.followedBy.some((followingUser: Partial<User>) => followingUser.username === username)
+    ? user?.followers.some((followingUser: Partial<User>) => followingUser.username === username)
     : false,
 });
 

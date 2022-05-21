@@ -181,6 +181,16 @@ export const findUserIdByUsername = async (username: string) => {
     },
     select: {
       id: true,
+      blocking: {
+        select: {
+          username: true,
+        },
+      },
+      blockedBy: {
+        select: {
+          username: true,
+        },
+      },
     },
   });
 
