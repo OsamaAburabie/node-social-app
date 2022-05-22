@@ -22,33 +22,17 @@ export const getProfile = async (usernamePayload: string, usernameAuth: string) 
 
 export const followUser = async (usernamePayload: string, usernameAuth: string) => {
   const { id, blocking, blockedBy } = await findUserIdByUsername(usernameAuth);
+  //fund the target user
+  await findUserIdByUsername(usernamePayload);
 
-  const isSameUser = usernamePayload === usernameAuth;
-  if (isSameUser) {
-    throw new HttpException(403, {
-      errors: {
-        message: `You can't follow yourself`,
-      },
-    });
-  }
+  const me = usernamePayload === usernameAuth;
+  if (me) throw new HttpException(409, {});
 
   const isBlocking = blocking.some((user: any) => user.username === usernamePayload);
-  if (isBlocking) {
-    throw new HttpException(403, {
-      errors: {
-        message: `You can't follow ${usernamePayload} because you have blocked him/her`,
-      },
-    });
-  }
+  if (isBlocking) throw new HttpException(403, {});
 
   const isBlockedBy = blockedBy.some((user: any) => user.username === usernamePayload);
-  if (isBlockedBy) {
-    throw new HttpException(403, {
-      errors: {
-        message: `You can't follow ${usernamePayload} because they have blocked you`,
-      },
-    });
-  }
+  if (isBlockedBy) throw new HttpException(403, {});
 
   const profile = await prisma.user.update({
     where: {
@@ -71,6 +55,11 @@ export const followUser = async (usernamePayload: string, usernameAuth: string) 
 
 export const unfollowUser = async (usernamePayload: string, usernameAuth: string) => {
   const { id } = await findUserIdByUsername(usernameAuth);
+  //fund the target user
+  await findUserIdByUsername(usernamePayload);
+
+  const me = usernamePayload === usernameAuth;
+  if (me) throw new HttpException(409, {});
 
   const profile = await prisma.user.update({
     where: {
@@ -93,16 +82,11 @@ export const unfollowUser = async (usernamePayload: string, usernameAuth: string
 
 export const blockUser = async (usernamePayload: string, usernameAuth: string) => {
   const { id } = await findUserIdByUsername(usernameAuth);
+  //fund the target user
+  await findUserIdByUsername(usernamePayload);
 
-  const isSame = usernamePayload === usernameAuth;
-
-  if (isSame) {
-    throw new HttpException(403, {
-      errors: {
-        message: `You can't block yourself`,
-      },
-    });
-  }
+  const me = usernamePayload === usernameAuth;
+  if (me) throw new HttpException(409, {});
 
   await prisma.user.update({
     where: {
@@ -135,15 +119,12 @@ export const blockUser = async (usernamePayload: string, usernameAuth: string) =
 
 export const unblockUser = async (usernamePayload: string, usernameAuth: string) => {
   const { id } = await findUserIdByUsername(usernameAuth);
-  const isSame = usernamePayload === usernameAuth;
+  //fund the target user
+  await findUserIdByUsername(usernamePayload);
 
-  if (isSame) {
-    throw new HttpException(403, {
-      errors: {
-        message: `You can't unblock yourself what the hell`,
-      },
-    });
-  }
+  const me = usernamePayload === usernameAuth;
+
+  if (me) throw new HttpException(409, {});
 
   await prisma.user.update({
     where: {

@@ -5,6 +5,7 @@ import HttpException from '../models/http-exception.model';
 import { RegisteredUser } from '../models/registered-user.model';
 import generateToken from '../utils/token.utils';
 import { User } from '@prisma/client';
+import { nanoid } from 'nanoid';
 
 const checkUserUniqueness = async (email: string, username: string) => {
   const existingUserByEmail = await prisma.user.findUnique({
@@ -66,6 +67,7 @@ export const createUser = async (input: RegisterInput): Promise<RegisteredUser> 
       ...(bio ? { bio } : {}),
     },
     select: {
+      id: true,
       email: true,
       username: true,
       bio: true,
@@ -73,9 +75,17 @@ export const createUser = async (input: RegisterInput): Promise<RegisteredUser> 
     },
   });
 
+  const tokenId = nanoid();
+  const session = await prisma.session.create({
+    data: {
+      userId: user.id,
+      tokenId,
+    },
+  });
+
   return {
     ...user,
-    token: generateToken(user),
+    token: generateToken(user as User, tokenId),
   };
 };
 
@@ -96,6 +106,7 @@ export const login = async (userPayload: any) => {
       email,
     },
     select: {
+      id: true,
       email: true,
       username: true,
       password: true,
@@ -107,13 +118,21 @@ export const login = async (userPayload: any) => {
   if (user) {
     const match = await bcrypt.compare(password, user.password);
 
+    const tokenId = nanoid();
+    const session = await prisma.session.create({
+      data: {
+        userId: user.id,
+        tokenId,
+      },
+    });
+
     if (match) {
       return {
         email: user.email,
         username: user.username,
         bio: user.bio,
         image: user.image,
-        token: generateToken(user),
+        token: generateToken(user as User, tokenId),
       };
     }
   }
@@ -131,6 +150,7 @@ export const getCurrentUser = async (username: string) => {
       username,
     },
     select: {
+      id: true,
       email: true,
       username: true,
       bio: true,
@@ -138,9 +158,25 @@ export const getCurrentUser = async (username: string) => {
     },
   });
 
+  if (!user) {
+    throw new HttpException(404, {
+      errors: {
+        user: ['not found'],
+      },
+    });
+  }
+
+  const tokenId = nanoid();
+  const session = await prisma.session.create({
+    data: {
+      userId: user.id,
+      tokenId,
+    },
+  });
+
   return {
     ...user,
-    token: generateToken(user as User),
+    token: generateToken(user as User, tokenId),
   };
 };
 
@@ -161,6 +197,7 @@ export const updateUser = async (userPayload: any, loggedInUsername: string) => 
       ...(bio ? { bio } : {}),
     },
     select: {
+      id: true,
       email: true,
       username: true,
       bio: true,
@@ -168,9 +205,25 @@ export const updateUser = async (userPayload: any, loggedInUsername: string) => 
     },
   });
 
+  if (!user) {
+    throw new HttpException(404, {
+      errors: {
+        user: ['not found'],
+      },
+    });
+  }
+
+  const tokenId = nanoid();
+  const session = await prisma.session.create({
+    data: {
+      userId: user.id,
+      tokenId,
+    },
+  });
+
   return {
     ...user,
-    token: generateToken(user),
+    token: generateToken(user as User, tokenId),
   };
 };
 
@@ -199,4 +252,22 @@ export const findUserIdByUsername = async (username: string) => {
   }
 
   return user;
+};
+
+export const checkSessionRevoked = async (tokenId: string | undefined) => {
+  const session = await prisma.session.findUnique({
+    where: {
+      tokenId,
+    },
+  });
+
+  if (!session) {
+    return true;
+  }
+
+  if (session.revoked === true) {
+    return true;
+  }
+
+  return false;
 };
