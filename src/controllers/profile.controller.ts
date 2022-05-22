@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import { Request } from 'express-jwt';
 import auth from '../utils/auth';
 import {
   blockUser,
@@ -22,7 +23,7 @@ router.get(
   auth.optional,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const profile = await getProfile(req.params?.username, req.user?.username as string);
+      const profile = await getProfile(req.params?.username, req.auth?.username as string);
       res.json({ profile });
     } catch (error) {
       next(error);
@@ -42,7 +43,7 @@ router.post(
   auth.required,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const profile = await followUser(req.params?.username, req.user?.username as string);
+      const profile = await followUser(req.params?.username, req.auth?.username as string);
       res.json({ profile });
     } catch (error) {
       next(error);
@@ -62,7 +63,7 @@ router.delete(
   auth.required,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const profile = await unfollowUser(req.params.username, req.user?.username as string);
+      const profile = await unfollowUser(req.params.username, req.auth?.username as string);
       res.json({ profile });
     } catch (error) {
       next(error);
@@ -75,7 +76,7 @@ router.post(
   auth.required,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const profile = await blockUser(req.params.username, req.user?.username as string);
+      const profile = await blockUser(req.params.username, req.auth?.username as string);
       res.json({ profile });
     } catch (error) {
       next(error);
@@ -88,7 +89,7 @@ router.delete(
   auth.required,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const profile = await unblockUser(req.params.username, req.user?.username as string);
+      const profile = await unblockUser(req.params.username, req.auth?.username as string);
       res.json({ profile });
     } catch (error) {
       next(error);

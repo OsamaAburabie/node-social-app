@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import { Request } from 'express-jwt';
 import auth from '../utils/auth';
 import getTags from '../services/tag.service';
 
@@ -16,7 +17,7 @@ declare module 'express-serve-static-core' {
  */
 router.get('/tags', auth.optional, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const tags = await getTags(req.user?.username);
+    const tags = await getTags(req.auth?.username);
     res.json({ tags });
   } catch (error) {
     next(error);

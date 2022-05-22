@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import { Request } from 'express-jwt';
 import auth from '../utils/auth';
 import { createUser, getCurrentUser, login, updateUser } from '../services/auth.service';
 
@@ -44,7 +45,7 @@ router.post('/users/login', async (req: Request, res: Response, next: NextFuncti
  */
 router.get('/user', auth.required, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await getCurrentUser(req.user?.username as string);
+    const user = await getCurrentUser(req.auth?.username as string);
     res.json({ user });
   } catch (error) {
     next(error);
@@ -60,7 +61,7 @@ router.get('/user', auth.required, async (req: Request, res: Response, next: Nex
  */
 router.put('/user', auth.required, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await updateUser(req.body.user, req.user?.username as string);
+    const user = await updateUser(req.body.user, req.auth?.username as string);
     res.json({ user });
   } catch (error) {
     next(error);

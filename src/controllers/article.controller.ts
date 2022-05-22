@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import { Request } from 'express-jwt';
 import auth from '../utils/auth';
 import {
   addComment,
@@ -29,7 +30,7 @@ const router = Router();
  */
 router.get('/articles', auth.optional, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await getArticles(req.query, req.user?.username);
+    const result = await getArticles(req.query, req.auth?.username);
     res.json(result);
   } catch (error) {
     next(error);
@@ -50,7 +51,7 @@ router.get(
       const result = await getFeed(
         Number(req.query.offset),
         Number(req.query.limit),
-        req.user?.username as string,
+        req.auth?.username as string,
       );
       res.json(result);
     } catch (error) {
@@ -70,7 +71,7 @@ router.get(
  */
 router.post('/articles', auth.required, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const article = await createArticle(req.body.article, req.user?.username as string);
+    const article = await createArticle(req.body.article, req.auth?.username as string);
     res.json({ article });
   } catch (error) {
     next(error);
@@ -89,7 +90,7 @@ router.get(
   auth.optional,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const article = await getArticle(req.params.slug, req.user?.username as string);
+      const article = await getArticle(req.params.slug, req.auth?.username as string);
       res.json({ article });
     } catch (error) {
       next(error);
@@ -115,7 +116,7 @@ router.put(
       const article = await updateArticle(
         req.body.article,
         req.params.slug,
-        req.user?.username as string,
+        req.auth?.username as string,
       );
       res.json({ article });
     } catch (error) {
@@ -155,7 +156,7 @@ router.get(
   auth.optional,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const comments = await getCommentsByArticle(req.params.slug, req.user?.username);
+      const comments = await getCommentsByArticle(req.params.slug, req.auth?.username);
       res.json({ comments });
     } catch (error) {
       next(error);
@@ -179,7 +180,7 @@ router.post(
       const comment = await addComment(
         req.body.comment.body,
         req.params.slug,
-        req.user?.username as string,
+        req.auth?.username as string,
       );
       res.json({ comment });
     } catch (error) {
@@ -200,7 +201,7 @@ router.delete(
   auth.required,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await deleteComment(Number(req.params.id), req.user?.username as string);
+      await deleteComment(Number(req.params.id), req.auth?.username as string);
       res.sendStatus(204);
     } catch (error) {
       next(error);
@@ -220,7 +221,7 @@ router.post(
   auth.required,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const article = await favoriteArticle(req.params.slug, req.user?.username as string);
+      const article = await favoriteArticle(req.params.slug, req.auth?.username as string);
       res.json({ article });
     } catch (error) {
       next(error);
@@ -240,7 +241,7 @@ router.delete(
   auth.required,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const article = await unfavoriteArticle(req.params.slug, req.user?.username as string);
+      const article = await unfavoriteArticle(req.params.slug, req.auth?.username as string);
       res.json({ article });
     } catch (error) {
       next(error);
