@@ -35,7 +35,7 @@ app.get('/api-docs', (req: Request, res: Response) => {
 });
 
 /* eslint-disable */
-app.use((err: Error | HttpException, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error | HttpException, _req: Request, res: Response, _next: NextFunction) => {
   // @ts-ignore
   if (err && err instanceof UnauthorizedError) {
     return res.status(401).json({

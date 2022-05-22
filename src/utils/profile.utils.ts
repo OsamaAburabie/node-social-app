@@ -1,4 +1,4 @@
-import { User } from '../models/user.model';
+import { User } from '@prisma/client';
 import { Profile } from '../models/profile.model';
 
 const profileMapper = (user: any, username: string | undefined): Profile => ({

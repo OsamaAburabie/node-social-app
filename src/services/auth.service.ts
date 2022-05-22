@@ -4,7 +4,7 @@ import prisma from '../../prisma/prisma-client';
 import HttpException from '../models/http-exception.model';
 import { RegisteredUser } from '../models/registered-user.model';
 import generateToken from '../utils/token.utils';
-import { User } from '../models/user.model';
+import { User } from '@prisma/client';
 
 const checkUserUniqueness = async (email: string, username: string) => {
   const existingUserByEmail = await prisma.user.findUnique({
@@ -126,7 +126,7 @@ export const login = async (userPayload: any) => {
 };
 
 export const getCurrentUser = async (username: string) => {
-  const user = (await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       username,
     },
@@ -136,11 +136,11 @@ export const getCurrentUser = async (username: string) => {
       bio: true,
       image: true,
     },
-  })) as User;
+  });
 
   return {
     ...user,
-    token: generateToken(user),
+    token: generateToken(user as User),
   };
 };
 
